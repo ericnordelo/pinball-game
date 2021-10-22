@@ -244,7 +244,7 @@ contract Pinball {
                     if (state.readUint8At(dataOff) == uint8(state.location)) bumpers++;
                     dataOff++;
                 }
-                console.log("Bumbers: ", bumpers);
+                console.log("bumbers: ", bumpers);
 
                 if (bumpers == 64) {
                     state.baseScore += state.readRand() % 500;
