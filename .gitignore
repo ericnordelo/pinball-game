@@ -1,0 +1,18 @@
+.env
+node_modules
+package-lock.json
+
+# Hardhat files
+cache
+artifacts
+
+# Solidity coverage
+coverage/
+coverage.json
+
+# docs
+docs
+
+deployments/
+
+.vscode/
