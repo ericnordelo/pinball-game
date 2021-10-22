@@ -24,7 +24,7 @@ async function main() {
   ];
 
   let ballBytes = ball.reduce((previous, next) => {
-    return previous + next.slice(2);
+    return previous + next.slice(2).replace(/\s/g, '');
   }, '0x');
 
   // make the commitment

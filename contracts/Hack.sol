@@ -26,6 +26,20 @@ contract Hack is Ownable {
         pinball = Pinball(pinball_);
     }
 
+    function getRandNumbers() external view onlyOwner returns (uint16[50] memory ret) {
+        uint32 nextRand;
+        uint32 rand = 1337;
+
+        for (uint32 i; i < 50; i++) {
+            unchecked {
+                nextRand = rand * 1103515245 + 12345;
+            }
+            rand = nextRand;
+
+            ret[i] = uint16(nextRand >> 16);
+        }
+    }
+
     function getBestSubmission()
         external
         view

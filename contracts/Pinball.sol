@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.9;
 
+import "hardhat/console.sol";
+
 library LibPinball {
     struct State {
         bytes ball;
@@ -113,6 +115,7 @@ contract Pinball {
         require(state.init(ball, msg.sender), "invalid ball");
 
         for (uint256 i = 0; i < state.commandsLength; i++) {
+            console.log("location: ", state.location);
             if (!tick(state, i)) break;
 
             state.bonusScore += 50;
@@ -182,6 +185,7 @@ contract Pinball {
         uint256 tiltAmount = state.readUint8At(dataOff + 1);
         uint256 tiltPrice = state.readRand() % 100;
 
+        console.log("tiltPrice: ", tiltPrice);
         state.totalTiltPrice += tiltSpend;
 
         if (state.totalTiltPrice >= 100) {
@@ -240,6 +244,7 @@ contract Pinball {
                     if (state.readUint8At(dataOff) == uint8(state.location)) bumpers++;
                     dataOff++;
                 }
+                console.log("Bumbers: ", bumpers);
 
                 if (bumpers == 64) {
                     state.baseScore += state.readRand() % 500;
@@ -344,6 +349,7 @@ contract Pinball {
                 bytes32 hash = state.readBytes32At(dataOff);
                 bytes32 part = bytes32(state.location);
                 uint32 branch = state.readRand() % type(uint32).max;
+                console.log("branch: ", branch);
                 for (uint256 i = 0; i < 32; i++) {
                     if (branch & 0x1 == 0x1) hash ^= part;
                     branch >> 1;
@@ -395,7 +401,7 @@ contract Pinball {
                         dataOff += uint16(skip);
                     }
                 }
-
+                // console.log("accumulator: ", accumulator);
                 if (accumulator == 0x020c020c) {
                     if (state.currentMission == 1) {
                         state.baseScore += 1000;
@@ -419,5 +425,17 @@ contract Pinball {
         }
 
         return true;
+    }
+
+    function bytes32ToString(bytes32 _bytes32) public pure returns (string memory) {
+        uint8 i = 0;
+        while (i < 32 && _bytes32[i] != 0) {
+            i++;
+        }
+        bytes memory bytesArray = new bytes(i);
+        for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
+            bytesArray[i] = _bytes32[i];
+        }
+        return string(bytesArray);
     }
 }
